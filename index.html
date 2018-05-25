@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>danime</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        #wv {
+            height: 100vh;
+            width: 100vw;
+        }
+    </style>
+</head>
+<body>
+    <webview
+        id="wv"
+        src="https://anime.dmkt-sp.jp/animestore"
+        preload="./danime.js"
+        allowpopups
+        plugins
+    >
+    </webview>
+    <script>
+        const { ipcRenderer }  = require('electron')
+        const io        = require('socket.io-client')
+        const os        = require('os')
+        const socket    = io('http://localhost:3000')
+        const webview   = document.querySelector('#wv')
+        const uuid      = require('uuid/v4')()
+
+        // 他端末で視聴があった場合、appを終了する
+        socket.on('danime joined', uuidProp => {
+            if (uuid !== uuidProp) {
+                ipcRenderer.send('need-quit')
+            }
+        })
+
+        // render logs
+        webview.addEventListener('console-message', (e) => console.log('webview >', e.message))
+
+        // 動画を見るときに、websocketを通じてその他の端末での視聴状態を閉じる
+        webview.addEventListener('new-window', e => {
+            const userID = window.sessionStorage.getItem('user_id')
+            if (userID) {
+                socket.emit('show movie', userID, uuid)
+            }
+        })
+
+        // webviewのcookieから、userIDを取得する
+        webview.addEventListener("ipc-message", event => {
+            const userID = event.args[0]
+            ipcRenderer.send('get-user-id', userID)
+            window.sessionStorage.setItem('user_id', userID)
+        })
+    </script>
+</body>
+</html>

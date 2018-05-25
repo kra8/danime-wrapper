@@ -1,0 +1,36 @@
+{
+  "name": "danime",
+  "description": "danime store wrapper.",
+  "version": "1.0.0",
+  "author": {
+    "name": "kra8",
+    "email": "kra.ceifer@gmail.com"
+  },
+  "main": "main.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "cross-env NODE_ENV=development concurrently --kill-others \"npm run start:app\" \"npm run start:server\"",
+    "start:app": "electron .",
+    "start:server": "node server.js",
+    "pack:dir": "npm run clean; cross-env NODE_ENV=production electron-builder --dir",
+    "pack:mac": "npm run clean; cross-env NODE_ENV=production electron-builder --mac",
+    "clean": "rimraf dist",
+    "clean:all": "rimraf dist .cache *.log"
+  },
+  "devDependencies": {
+    "concurrently": "^3.5.1",
+    "cross-env": "^5.1.5",
+    "devtron": "^1.4.0",
+    "electron": "^2.0.0",
+    "electron-builder": "^20.13.3",
+    "parcel-bundler": "^1.8.1",
+    "rimraf": "^2.6.2"
+  },
+  "dependencies": {
+    "electron-widevinecdm": "^7.0.0",
+    "express": "^4.16.3",
+    "socket.io": "^2.1.1",
+    "socket.io-client": "^2.1.1",
+    "uuid": "^3.2.1"
+  }
+}

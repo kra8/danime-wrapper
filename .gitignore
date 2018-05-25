@@ -1,0 +1,13 @@
+# macOS environment
+.DS_Store
+
+# dependencies
+node_modules/
+
+# yarn
+dist/
+build/
+.cache
+
+# without logs
+*.log
